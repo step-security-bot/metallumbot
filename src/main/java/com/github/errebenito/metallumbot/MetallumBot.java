@@ -1,8 +1,20 @@
 package com.github.errebenito.metallumbot;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.errebenito.metallumbot.connector.UrlConnector;
+import com.github.errebenito.metallumbot.connector.UrlType;
+import com.github.errebenito.metallumbot.model.UpcomingAlbums;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,19 +31,23 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  *
  */
 
-public class MetallumBot extends TelegramLongPollingBot { // NOPMD
+public class MetallumBot extends TelegramLongPollingBot {
+  private static final String LOCATION_HEADER = "Location";
+
+  private static final String ERROR_MESSAGE = "Error sending message";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MetallumBot.class);
 
   private static final String USAGE = """
   Usage:
    
-      /band Returns a random band""";
-
-  private static final String RANDOM_BAND_URL = "https://www.metal-archives.com/band/random";
+      /band Returns a random band
+      /upcoming Returns a partial list of upcoming releases""";
   
   private static final String TOKEN = System.getenv("METALLUM_BOT_TOKEN");
-  
   private static final String NAME = System.getenv("METALLUM_BOT_NAME");  
+  
+  
   
   /**
    * Constructor.
@@ -47,43 +63,68 @@ public class MetallumBot extends TelegramLongPollingBot { // NOPMD
    */
   @Override
   public void onUpdateReceived(final Update update) {
-
     if (update.hasMessage() && update.getMessage().hasText()) {
       final String messageText = update.getMessage().getText();
-      if ("/start".equals(messageText)) {
-        final SendMessage message = new SendMessage();
-        message.setChatId(update.getMessage().getChatId());
-        message.setText(USAGE);
-        try {
-          execute(message);
-        } catch (TelegramApiException e) {
-          LOGGER.error("Error sending message");
-        }
-      } else if ("/band".equals(messageText)) {
-        try {
-          final String bandUrl = setupConnection().getHeaderField("Location");
-          final SendMessage message = new SendMessage();
-          message.setChatId(update.getMessage().getChatId());
-          message.setText(bandUrl);
-          execute(message);
-        } catch (IOException | TelegramApiException e) {
-          LOGGER.error("Error sending message");
-        }
+      switch (messageText) {
+        case "/start" -> doStart(update);
+        case "/band" -> doBand(update);
+        case "/upcoming" -> doUpcoming(update);
+        default -> doStart(update);
       }
     }
   }
   
-  private HttpURLConnection setupConnection() throws IOException {
-    final URL obj = new URL(RANDOM_BAND_URL);
-    final HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-    connection.setReadTimeout(5000);
-    connection.addRequestProperty("Accept-Language", "en-US,en;q=0.8");
-    connection.addRequestProperty("User-Agent", "Mozilla");
-    connection.addRequestProperty("Referer", "google.com");
-    connection.setInstanceFollowRedirects(false);
-    return connection;
+  private void doStart(final Update update) {
+    try {
+      sendTextReply(update, USAGE);
+    } catch (TelegramApiException e) {
+      LOGGER.error(ERROR_MESSAGE);
+    }
+  }
+  
+  private void doBand(final Update update) {
+    String bandUrl;
+    try {
+      bandUrl = new UrlConnector().withUrl(UrlType.RANDOM_BAND)
+          .connect().getHeaderField(LOCATION_HEADER);
+      sendTextReply(update, bandUrl);
+    } catch (IOException | TelegramApiException e) {
+      LOGGER.error(ERROR_MESSAGE);
+    }
+  }
+  
+  private void doUpcoming(final Update update) {
+    try {
+      final HttpURLConnection connection = 
+          new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES).connect();
+      final ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);  
+      final UpcomingAlbums albums = objectMapper.readValue(getInput(connection), 
+          UpcomingAlbums.class); 
+      sendTextReply(update, albums.toString());      
+    } catch (IOException | TelegramApiException e) {
+      LOGGER.error(ERROR_MESSAGE);
+    }
   }
 
+  @SuppressFBWarnings
+  private InputStream getInput(final HttpURLConnection connection) throws IOException {
+    String result;
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(
+        connection.getURL().openStream())))) {
+      result = reader.lines().collect(Collectors.joining("\n"));
+    }
+    result = result.replace(": ,", ": 0,");
+    return new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
+  }
+    
+  private void sendTextReply(final Update update, final String text) throws TelegramApiException {
+    final SendMessage message = new SendMessage();
+    message.setChatId(update.getMessage().getChatId());
+    message.setText(text);
+    execute(message);
+  }
+  
   /**
    * Returns the bot name which was specified during registration.
 
@@ -92,16 +133,6 @@ public class MetallumBot extends TelegramLongPollingBot { // NOPMD
   @Override
   public String getBotUsername() {
     return NAME;
-  }
-
-  /**
-   * Returns the bot token for communicating with the Telegram server.
-
-   * @return the bot token
-   */
-  @Override
-  public String getBotToken() {
-    return TOKEN;
   }
 
   /**
