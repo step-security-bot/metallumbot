@@ -32,6 +32,13 @@ public class MetallumBot extends TelegramLongPollingBot { // NOPMD
   private static final String NAME = System.getenv("METALLUM_BOT_NAME");  
   
   /**
+   * Constructor.
+   */
+  public MetallumBot() {
+    super(TOKEN);
+  }
+  
+  /**
    * Method for receiving messages.
 
    * @param update Contains a message from the user.
