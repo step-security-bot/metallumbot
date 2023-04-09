@@ -22,8 +22,10 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 public class MetallumBot extends TelegramLongPollingBot { // NOPMD
   private static final Logger LOGGER = LoggerFactory.getLogger(MetallumBot.class);
 
-  private static final String USAGE = "Usage:" + System.lineSeparator() + System.lineSeparator()
-      + "/band Returns a random band";
+  private static final String USAGE = """
+  Usage:
+   
+      /band Returns a random band""";
 
   private static final String RANDOM_BAND_URL = "https://www.metal-archives.com/band/random";
   
