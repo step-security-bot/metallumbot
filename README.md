@@ -2,6 +2,8 @@
 
 A simple Telegram bot written in java to retrieve upcoming albums and random bands from [Metal Archives](https://www.metal-archives.com/)
 
+![Codacy grade](https://img.shields.io/codacy/grade/f90964df13e64e36a0c90e3542c108fd)
+
 ## Requirements
 
 - Java 17+
