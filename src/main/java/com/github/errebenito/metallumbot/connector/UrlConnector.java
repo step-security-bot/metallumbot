@@ -1,12 +1,19 @@
 package com.github.errebenito.metallumbot.connector;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Manages connections to the metal-archives site.
@@ -69,5 +76,22 @@ public class UrlConnector {
     connection.addRequestProperty("Referer", "google.com");
     connection.setInstanceFollowRedirects(false);
     return connection;
+  }
+  
+  /**
+   * Reads the upcoming albums JSON.
+
+   * @return A ByteArrayInputStream with the contents of the JSON.
+   * @throws IOException When an error occurs while reading the JSON.
+   */
+  @SuppressFBWarnings
+  public InputStream readUpcomingAlbumsJson() throws IOException {
+    String result;
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(
+        this.url.openStream())))) {
+      result = reader.lines().collect(Collectors.joining("\n"));
+    }
+    result = result.replace(": ,", ": 0,");
+    return new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
   }
 }
