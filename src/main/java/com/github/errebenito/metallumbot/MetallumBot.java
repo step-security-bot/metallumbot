@@ -1,11 +1,6 @@
 package com.github.errebenito.metallumbot;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.errebenito.metallumbot.connector.UrlConnector;
-import com.github.errebenito.metallumbot.connector.UrlType;
-import com.github.errebenito.metallumbot.model.UpcomingAlbums;
-import java.io.IOException;
+import com.github.errebenito.metallumbot.command.CommandRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -23,8 +18,7 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
  */
 
 public class MetallumBot extends TelegramLongPollingBot {
-  private static final String LOCATION_HEADER = "Location";
-
+  
   private static final String ERROR_MESSAGE = "Error sending message";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MetallumBot.class);
@@ -37,6 +31,8 @@ public class MetallumBot extends TelegramLongPollingBot {
   
   private static final String TOKEN = System.getenv("METALLUM_BOT_TOKEN");
   private static final String NAME = System.getenv("METALLUM_BOT_NAME");  
+  
+  private final CommandRunner runner = new CommandRunner();
   
   /**
    * Constructor.
@@ -54,44 +50,29 @@ public class MetallumBot extends TelegramLongPollingBot {
   public void onUpdateReceived(final Update update) {
     if (update.hasMessage() && update.getMessage().hasText()) {
       final String messageText = update.getMessage().getText();
-      switch (messageText) {
-        case "/start" -> doStart(update);
-        case "/band" -> doBand(update);
-        case "/upcoming" -> doUpcoming(update);
-        default -> doStart(update);
+      switch (messageText) { 
+        case "/band" -> {
+          try {
+            sendTextReply(update, runner.doBand());
+          } catch (TelegramApiException e) {
+            LOGGER.error(ERROR_MESSAGE);
+          }
+        }
+        case "/upcoming" -> {
+          try {
+            sendTextReply(update, runner.doUpcoming());
+          } catch (TelegramApiException e) {
+            LOGGER.error(ERROR_MESSAGE);
+          }
+        }
+        default -> {
+          try {
+            sendTextReply(update, USAGE);
+          } catch (TelegramApiException e) {
+            LOGGER.error(ERROR_MESSAGE);
+          }
+        }
       }
-    }
-  }
-  
-  private void doStart(final Update update) {
-    try {
-      sendTextReply(update, USAGE);
-    } catch (TelegramApiException e) {
-      LOGGER.error(ERROR_MESSAGE);
-    }
-  }
-  
-  private void doBand(final Update update) {
-    String bandUrl;
-    try {
-      bandUrl = new UrlConnector().withUrl(UrlType.RANDOM_BAND)
-          .connect().getHeaderField(LOCATION_HEADER);
-      sendTextReply(update, bandUrl);
-    } catch (IOException | TelegramApiException e) {
-      LOGGER.error(ERROR_MESSAGE);
-    }
-  }
-  
-  private void doUpcoming(final Update update) {
-    try {
-      final UrlConnector connector = new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES);
-      final ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);  
-      final UpcomingAlbums albums = objectMapper.readValue(connector.readUpcomingAlbumsJson(), 
-          UpcomingAlbums.class); 
-      sendTextReply(update, albums.toString());      
-    } catch (IOException | TelegramApiException e) {
-      LOGGER.error(ERROR_MESSAGE);
     }
   }
     
