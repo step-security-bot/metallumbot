@@ -65,7 +65,11 @@ public class UpcomingAlbums implements Serializable {
         }
       }
     }
-    return Arrays.toString(result.toArray()).replace("[", "").replace("]", "");
+    return formatData(Arrays.toString(result.toArray()));
+  }
+    
+  private boolean isAlbumLink(final String string) {
+    return string.contains("https://www.metal-archives.com/albums/");
   }
 
   private String trimLink(final String link) {
@@ -73,8 +77,7 @@ public class UpcomingAlbums implements Serializable {
     return link.substring(8, index).replace("\"", "");
   }
   
-  private boolean isAlbumLink(final String string) {
-    return string.contains("https://www.metal-archives.com/albums/");
+  private String formatData(final String data) {
+    return data.replace("[", "").replace("]", "").replace(",", "\n");
   }
-
 }
