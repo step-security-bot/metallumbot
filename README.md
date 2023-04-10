@@ -2,7 +2,7 @@
 
 A simple Telegram bot written in java to retrieve upcoming albums and random bands from [Metal Archives](https://www.metal-archives.com/)
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/errebenito/metallumbot/build.yml) ![Codacy grade](https://img.shields.io/codacy/grade/f90964df13e64e36a0c90e3542c108fd) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/errebenito/metallumbot)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/errebenito/metallumbot/build.yml) ![Codacy grade](https://img.shields.io/codacy/grade/f90964df13e64e36a0c90e3542c108fd) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/errebenito/metallumbot) ![Codecov](https://img.shields.io/codecov/c/github/errebenito/metallumbot)
 
 ## Requirements
 
