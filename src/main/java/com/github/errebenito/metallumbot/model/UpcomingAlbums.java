@@ -61,14 +61,14 @@ public class UpcomingAlbums implements Serializable {
     for (final List<String> list : this.albumData.subList(0, 10)) {
       for (final String string : list) {
         if (isAlbumLink(string)) {
-          result.add(sanitizeLink(string));
+          result.add(trimLink(string));
         }
       }
     }
     return Arrays.toString(result.toArray()).replace("[", "").replace("]", "");
   }
 
-  private String sanitizeLink(final String link) {
+  private String trimLink(final String link) {
     final int index = link.lastIndexOf("\">");
     return link.substring(8, index).replace("\"", "");
   }
