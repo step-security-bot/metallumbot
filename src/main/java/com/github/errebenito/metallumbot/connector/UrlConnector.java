@@ -24,10 +24,13 @@ import java.util.stream.Collectors;
 public class UrlConnector {
   
   private static final int TIMEOUT = 5000;
+  
   private static final String RANDOM_BAND_URL = "https://www.metal-archives.com/band/random";
+  
   private static final String NEW_RELEASES_URL = "https://www.metal-archives.com/release/ajax-upcoming/json";
   
   private URL url;
+  
   private Map<UrlType, String> validUrls;
   
   /**

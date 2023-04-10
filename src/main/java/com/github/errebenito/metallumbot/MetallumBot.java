@@ -30,6 +30,7 @@ public class MetallumBot extends TelegramLongPollingBot {
       /upcoming Returns a partial list of upcoming releases""";
   
   private static final String TOKEN = System.getenv("METALLUM_BOT_TOKEN");
+  
   private static final String NAME = System.getenv("METALLUM_BOT_NAME");  
   
   private final CommandRunner runner = new CommandRunner();

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.errebenito.metallumbot.connector.UrlConnector;
 import com.github.errebenito.metallumbot.connector.UrlType;
 import com.github.errebenito.metallumbot.model.UpcomingAlbums;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CommandRunner {
   private static final String LOCATION_HEADER = "Location";
+  
   private static final Logger LOGGER = LoggerFactory.getLogger(CommandRunner.class);
+  
   private static final String ERROR_MESSAGE = "Error retrieving data";
   
   /**
@@ -25,6 +28,7 @@ public class CommandRunner {
 
    * @return A string representation of the URL.
    */
+  @Nullable
   public String doBand() {
     String result = "";
     try {
