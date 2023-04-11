@@ -56,7 +56,10 @@
     			<artifactId>maven-surefire-plugin</artifactId>
     			<version>3.0.0</version>
     			<configuration>
-    				<test>com.github.errebenito.metallumbot.command.CommandRunnerTest</test>
+    			<includes>
+	    			<include>com.github.errebenito.metallumbot.command.CommandRunnerTest.java</include>
+    				<include>com.github.errebenito.metallumbot.connector.UrlConnectorTest.java</include>    
+    			</includes>								
     			</configuration>
 			</plugin>
 			<plugin>
@@ -101,6 +104,42 @@
         			</execution>
     			</executions>
 			</plugin>
+			<plugin>
+                    <groupId>org.pitest</groupId>
+                    <artifactId>pitest-maven</artifactId>
+                    <version>1.12.0</version>
+                    <executions>
+                        <execution>
+                            <id>pit-report</id>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>mutationCoverage</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.pitest</groupId>
+                            <artifactId>pitest-junit5-plugin</artifactId>
+                            <version>1.1.2</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <targetClasses>
+                            <param>com.github.errebenito.metallumbot*</param>
+                        </targetClasses>
+                        <targetTests>
+                            <param>com.github.errebenito.metallumbot.command.CommandRunnerTest*</param>
+                            <param>com.github.errebenito.metallumbot.connector.UrlConnectorTest*</param>
+                        </targetTests>
+                        <outputFormats>
+                            <outputFormat>xml</outputFormat>
+                            <outputFormat>html</outputFormat>
+                        </outputFormats>
+                        <timestampedReports>false</timestampedReports>
+                        <failWhenNoMutations>false</failWhenNoMutations>
+                    </configuration>
+                </plugin>
 		</plugins>
 	</build>
 </project>

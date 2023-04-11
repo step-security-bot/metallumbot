@@ -40,15 +40,15 @@ public class UrlConnector {
     new UrlConnector(null);
     addUrls();
   }
-
+  
+  private UrlConnector(final URL url) {
+    this.url = url;   
+  }
+  
   private void addUrls() {
     this.validUrls = new ConcurrentHashMap<>();
     this.validUrls.put(UrlType.RANDOM_BAND, RANDOM_BAND_URL);
     this.validUrls.put(UrlType.UPCOMING_RELEASES, NEW_RELEASES_URL);
-  }
-  
-  private UrlConnector(final URL url) {
-    this.url = url;   
   }
   
   /**
