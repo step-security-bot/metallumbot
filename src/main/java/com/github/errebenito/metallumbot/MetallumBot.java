@@ -1,6 +1,9 @@
 package com.github.errebenito.metallumbot;
 
 import com.github.errebenito.metallumbot.command.CommandRunner;
+import com.github.errebenito.metallumbot.connector.UrlConnector;
+import com.github.errebenito.metallumbot.connector.UrlType;
+import java.net.MalformedURLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -32,9 +35,7 @@ public class MetallumBot extends TelegramLongPollingBot {
   private static final String TOKEN = System.getenv("METALLUM_BOT_TOKEN");
   
   private static final String NAME = System.getenv("METALLUM_BOT_NAME");  
-  
-  private final CommandRunner runner = new CommandRunner();
-  
+    
   /**
    * Constructor.
    */
@@ -49,20 +50,24 @@ public class MetallumBot extends TelegramLongPollingBot {
    */
   @Override
   public void onUpdateReceived(final Update update) {
+    CommandRunner runner;
     if (update.hasMessage() && update.getMessage().hasText()) {
       final String messageText = update.getMessage().getText();
       switch (messageText) { 
         case "/band" -> {
           try {
+            runner = new CommandRunner(new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl()));
             sendTextReply(update, runner.doBand());
-          } catch (TelegramApiException e) {
+          } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
         }
         case "/upcoming" -> {
           try {
+            runner = new CommandRunner(new UrlConnector()
+                .withUrl(UrlType.UPCOMING_RELEASES.getUrl()));
             sendTextReply(update, runner.doUpcoming());
-          } catch (TelegramApiException e) {
+          } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
         }

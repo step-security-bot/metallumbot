@@ -3,7 +3,6 @@ package com.github.errebenito.metallumbot.command;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.errebenito.metallumbot.connector.UrlConnector;
-import com.github.errebenito.metallumbot.connector.UrlType;
 import com.github.errebenito.metallumbot.model.UpcomingAlbums;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import java.io.IOException;
@@ -23,6 +22,12 @@ public class CommandRunner {
   
   private static final String ERROR_MESSAGE = "Error retrieving data";
   
+  private UrlConnector connector;
+  
+  public CommandRunner(final UrlConnector connector) {
+    this.connector = connector;
+  }
+  
   /**
    * Retrieves the URL to a random band.
 
@@ -32,8 +37,7 @@ public class CommandRunner {
   public String doBand() {
     String result = "";
     try {
-      result = new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl())
-          .connect().getHeaderField(LOCATION_HEADER);
+      result = connector.connect().getHeaderField(LOCATION_HEADER);
     } catch (IOException e) {
       LOGGER.error(ERROR_MESSAGE);
     }
@@ -48,7 +52,6 @@ public class CommandRunner {
   public String doUpcoming() {
     String result = "";
     try {
-      final UrlConnector connector = new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES.getUrl());
       final ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);  
       final UpcomingAlbums albums = objectMapper.readValue(connector.readUpcomingAlbumsJson(), 

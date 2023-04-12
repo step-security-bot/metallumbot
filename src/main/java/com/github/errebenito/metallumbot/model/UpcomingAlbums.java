@@ -19,32 +19,14 @@ import javax.validation.Valid;
 @JsonPropertyOrder({"aaData"})
 public class UpcomingAlbums implements Serializable {
   
-  private static final long serialVersionUID = 7212384018505488798L;
+  private static final long serialVersionUID = 2788594305013188535L;
 
   private static final String PROPERTY_NAME = "aaData";
 
   @JsonProperty(PROPERTY_NAME)
   @Valid
   private List<List<String>> albumData = new ArrayList<>();
-
-  /**
-  * No args constructor for use in serialization.
-  *
-  */
-  public UpcomingAlbums() {
-    // Intentionally empty
-  }
-  
-  /**
-  * Constructor.
-
-  * @param albumData The upcoming albums data.
-  */
-  public UpcomingAlbums(final List<List<String>> albumData) {
-    super();
-    this.albumData = albumData;
-  }
-    
+      
   @JsonProperty(PROPERTY_NAME)
   public List<List<String>> getAlbumData() {
     return albumData;
@@ -58,7 +40,7 @@ public class UpcomingAlbums implements Serializable {
   @Override
   public String toString() {
     final List<String> result = new ArrayList<>();
-    for (final List<String> list : this.albumData.subList(0, 10)) {
+    for (final List<String> list : this.getAlbumData().subList(0, 10)) {
       for (final String string : list) {
         if (isAlbumLink(string)) {
           result.add(trimLink(string));
