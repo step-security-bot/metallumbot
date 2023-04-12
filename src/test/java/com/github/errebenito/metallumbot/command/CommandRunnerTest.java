@@ -18,7 +18,7 @@ class CommandRunnerTest {
   /**
    * Setup for the tests.
 
-   * @throws MalformedURLException If there is an error trying to connect to the URLs.
+   * @throws MalformedURLException In case of error trying to connect to the URLs.
    */
   @BeforeAll
   static void setUpBeforeClass() {

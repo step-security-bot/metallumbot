@@ -32,7 +32,7 @@ public class CommandRunner {
   public String doBand() {
     String result = "";
     try {
-      result = new UrlConnector().withUrl(UrlType.RANDOM_BAND)
+      result = new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl())
           .connect().getHeaderField(LOCATION_HEADER);
     } catch (IOException e) {
       LOGGER.error(ERROR_MESSAGE);
@@ -48,7 +48,7 @@ public class CommandRunner {
   public String doUpcoming() {
     String result = "";
     try {
-      final UrlConnector connector = new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES);
+      final UrlConnector connector = new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES.getUrl());
       final ObjectMapper objectMapper = new ObjectMapper();
       objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);  
       final UpcomingAlbums albums = objectMapper.readValue(connector.readUpcomingAlbumsJson(), 

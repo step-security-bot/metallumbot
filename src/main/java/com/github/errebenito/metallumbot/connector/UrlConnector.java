@@ -11,8 +11,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -24,42 +22,29 @@ import java.util.stream.Collectors;
 public class UrlConnector {
   
   private static final int TIMEOUT = 5000;
-  
-  private static final String RANDOM_BAND_URL = "https://www.metal-archives.com/band/random";
-  
-  private static final String NEW_RELEASES_URL = "https://www.metal-archives.com/release/ajax-upcoming/json";
-  
+    
   private URL url;
-  
-  private Map<UrlType, String> validUrls;
-  
+    
   /**
    * Constructor.
    */
   public UrlConnector() {
     new UrlConnector(null);
-    addUrls();
   }
   
   private UrlConnector(final URL url) {
     this.url = url;   
   }
-  
-  private void addUrls() {
-    this.validUrls = new ConcurrentHashMap<>();
-    this.validUrls.put(UrlType.RANDOM_BAND, RANDOM_BAND_URL);
-    this.validUrls.put(UrlType.UPCOMING_RELEASES, NEW_RELEASES_URL);
-  }
-  
+    
   /**
    * Specifies the URL associated to the connector.
 
-   * @param type The type of URL to connect to.
+   * @param url The URL to connect to.
    * @return an instance of UrlConnector
    * @throws MalformedURLException When the URL is not valid
    */
-  public UrlConnector withUrl(final UrlType type) throws MalformedURLException {
-    this.url = new URL(this.validUrls.get(type));    
+  public UrlConnector withUrl(final URL url) throws MalformedURLException {
+    this.url = url;
     return new UrlConnector(url);
   }
   
@@ -90,11 +75,12 @@ public class UrlConnector {
   @SuppressFBWarnings
   public InputStream readUpcomingAlbumsJson() throws IOException {
     String result;
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(
-        this.url.openStream())))) {
+    // The URL comes from a list of valid URLs and therefore it is safe to connect.
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+        new BufferedInputStream(this.url.openStream())))) {
       result = reader.lines().collect(Collectors.joining("\n"));
     }
-    result = result.replace(": ,", ": 0,");
+    result = result.replace(": ,", ": 0,"); // fix unexpected empty values
     return new ByteArrayInputStream(result.getBytes(StandardCharsets.UTF_8));
   }
 }

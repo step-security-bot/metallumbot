@@ -20,13 +20,27 @@ class UrlConnectorTest {
   /**
    * Setup for the tests.
 
-   * @throws MalformedURLException If there is an error trying to connect to the URLs.
+   * @throws MalformedURLException In case of error trying to connect to the URLs.
    */
   @BeforeAll
   static void setup() throws MalformedURLException {
-    connector = new UrlConnector().withUrl(UrlType.RANDOM_BAND);
+    connector = new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl());
   }
 
+  @Test
+  void whenRandomBandUrlShouldReturnCorrectUrl() throws IOException {
+    assertEquals(UrlType.RANDOM_BAND.getUrl(), 
+        connector.connect().getURL(), "URL did not match");
+  }
+ 
+  @Test
+  void whenUpcomingReleasesUrlShouldReturnCorrectUrl() throws IOException {
+    connector = new UrlConnector().withUrl(UrlType.UPCOMING_RELEASES.getUrl());
+    assertEquals(UrlType.UPCOMING_RELEASES.getUrl(), 
+        connector.connect().getURL(), "URL did not match");
+  }
+
+  
   @Test
   void whenConnectShouldHaveTimeout() throws IOException {
     final int timeout = connector.connect().getReadTimeout();
