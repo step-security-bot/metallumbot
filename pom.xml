@@ -49,6 +49,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.9.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
     		<groupId>org.easymock</groupId>
     		<artifactId>easymock</artifactId>
     		<version>5.1.0</version>
@@ -69,6 +75,7 @@
     			<version>3.0.0</version>
     			<configuration>
     			<includes>
+					<include>com.github.errebenito.metallumbot.MetallumBotTest.java</include>
 	    			<include>com.github.errebenito.metallumbot.command.CommandRunnerTest.java</include>
     				<include>com.github.errebenito.metallumbot.connector.UrlConnectorTest.java</include>    
     			</includes>								
@@ -141,6 +148,7 @@
                             <param>com.github.errebenito.metallumbot*</param>
                         </targetClasses>
                         <targetTests>
+							<param>com.github.errebenito.metallumbot.MetallumBotTest*</param>
                             <param>com.github.errebenito.metallumbot.command.CommandRunnerTest*</param>
                             <param>com.github.errebenito.metallumbot.connector.UrlConnectorTest*</param>
                         </targetTests>

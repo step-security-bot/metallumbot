@@ -1,5 +1,7 @@
 package com.github.errebenito.metallumbot.command;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -10,7 +12,6 @@ import com.github.errebenito.metallumbot.connector.UrlType;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import org.easymock.EasyMockExtension;
-import org.easymock.Mock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,9 +25,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 @ExtendWith(EasyMockExtension.class)
 class CommandRunnerTest {
 
-  @Mock
-  UrlConnector mockConnector;
-    
+      
   /**
    * Setup for the tests.
 
@@ -51,6 +50,17 @@ class CommandRunnerTest {
   
   @Test
   void whenDoBandWithBadUrlShouldThrowException() throws IOException {
+    UrlConnector mockConnector = createMock(UrlConnector.class);
+    expect(mockConnector.connect()).andThrow(new IOException());
+    replay(mockConnector);
+    CommandRunner runner = new CommandRunner(mockConnector);
+    runner.doBand();
+    verify(mockConnector);  
+  }
+  
+  @Test
+  void whenDoUpcomingWithBadUrlShouldThrowException() throws IOException {
+    UrlConnector mockConnector = createNiceMock(UrlConnector.class);
     expect(mockConnector.connect()).andThrow(new IOException());
     replay(mockConnector);
     CommandRunner runner = new CommandRunner(mockConnector);

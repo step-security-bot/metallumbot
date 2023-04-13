@@ -57,7 +57,7 @@ public class MetallumBot extends TelegramLongPollingBot {
         case "/band" -> {
           try {
             runner = new CommandRunner(new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl()));
-            sendTextReply(update, runner.doBand());
+            sendTextReply(update.getMessage().getChatId(), runner.doBand());
           } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
@@ -66,14 +66,14 @@ public class MetallumBot extends TelegramLongPollingBot {
           try {
             runner = new CommandRunner(new UrlConnector()
                 .withUrl(UrlType.UPCOMING_RELEASES.getUrl()));
-            sendTextReply(update, runner.doUpcoming());
+            sendTextReply(update.getMessage().getChatId(), runner.doUpcoming());
           } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
         }
         default -> {
           try {
-            sendTextReply(update, USAGE);
+            sendTextReply(update.getMessage().getChatId(), USAGE);
           } catch (TelegramApiException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
@@ -82,9 +82,9 @@ public class MetallumBot extends TelegramLongPollingBot {
     }
   }
     
-  private void sendTextReply(final Update update, final String text) throws TelegramApiException {
+  private void sendTextReply(final Long chatId, final String text) throws TelegramApiException {
     final SendMessage message = new SendMessage();
-    message.setChatId(update.getMessage().getChatId());
+    message.setChatId(chatId);
     message.setText(text);
     execute(message);
   }
