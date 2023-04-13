@@ -24,17 +24,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
  */
 @ExtendWith(EasyMockExtension.class)
 class CommandRunnerTest {
-
-      
-  /**
-   * Setup for the tests.
-
-   * @throws MalformedURLException In case of error trying to connect to the URLs.
-   */
-
+     
   @Test
   void whenDoBandShouldReturnBandLink() throws MalformedURLException {
-    CommandRunner runner = new CommandRunner(new UrlConnector()
+    final CommandRunner runner = new CommandRunner(new UrlConnector()
         .withUrl(UrlType.RANDOM_BAND.getUrl()));
     final String result = runner.doBand();
     assertTrue(result.contains("https://www.metal-archives.com/band/view/id/"), "Return value was not a band link");
@@ -42,7 +35,7 @@ class CommandRunnerTest {
 
   @Test
   void whenDoUpcomingShouldReturnAlbumLink() throws MalformedURLException {
-    CommandRunner runner = new CommandRunner(new UrlConnector()
+    final CommandRunner runner = new CommandRunner(new UrlConnector()
         .withUrl(UrlType.UPCOMING_RELEASES.getUrl()));
     final String result = runner.doUpcoming();
     assertTrue(result.contains("https://www.metal-archives.com/albums/"), "Return value did not contain an album link");
@@ -50,20 +43,20 @@ class CommandRunnerTest {
   
   @Test
   void whenDoBandWithBadUrlShouldThrowException() throws IOException {
-    UrlConnector mockConnector = createMock(UrlConnector.class);
+    final UrlConnector mockConnector = createMock(UrlConnector.class);
     expect(mockConnector.connect()).andThrow(new IOException());
     replay(mockConnector);
-    CommandRunner runner = new CommandRunner(mockConnector);
+    final CommandRunner runner = new CommandRunner(mockConnector);
     runner.doBand();
     verify(mockConnector);  
   }
   
   @Test
   void whenDoUpcomingWithBadUrlShouldThrowException() throws IOException {
-    UrlConnector mockConnector = createNiceMock(UrlConnector.class);
+    final UrlConnector mockConnector = createNiceMock(UrlConnector.class);
     expect(mockConnector.connect()).andThrow(new IOException());
     replay(mockConnector);
-    CommandRunner runner = new CommandRunner(mockConnector);
+    final CommandRunner runner = new CommandRunner(mockConnector);
     runner.doBand();
     verify(mockConnector);  
   }

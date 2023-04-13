@@ -24,6 +24,11 @@ public class CommandRunner {
   
   private UrlConnector connector;
   
+  /**
+   * Constructor.
+
+   * @param connector The UrlConnector
+   */
   public CommandRunner(final UrlConnector connector) {
     this.connector = connector;
   }

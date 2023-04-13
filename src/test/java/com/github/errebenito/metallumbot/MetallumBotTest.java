@@ -14,31 +14,37 @@ import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+/**
+ * Unit tests for the MetallumBot class.
+
+ * @author rbenito
+ *
+ */
 class MetallumBotTest {
   
   @ParameterizedTest
   @ValueSource(strings = {"/start", "/band", "/upcoming"})
   void testOnUpdateReceived(final String command) {
-    Message message = new Message();
+    final Message message = new Message();
     message.setText(command);
-    Chat chat = new Chat();
+    final Chat chat = new Chat();
     chat.setId(1L);
     message.setChat(chat);
-    Update updateMock = createMock(Update.class);
+    final Update updateMock = createMock(Update.class);
     expect(updateMock.hasMessage()).andReturn(true);
     expect(updateMock.getMessage()).andReturn(message);
     expectLastCall().times(3);
     replay(updateMock);
-    MetallumBot bot = new MetallumBot();
+    final MetallumBot bot = new MetallumBot();
     bot.onUpdateReceived(updateMock);
     verify(updateMock);
   }
 
   @Test
   void testGetBotUsername() {
-    MetallumBot bot = new MetallumBot();
+    final MetallumBot bot = new MetallumBot();
     assertEquals(System.getenv("METALLUM_BOT_NAME"),
-        bot.getBotUsername());
+        bot.getBotUsername(), "Bot returned incorrect name");
   }
 
 }

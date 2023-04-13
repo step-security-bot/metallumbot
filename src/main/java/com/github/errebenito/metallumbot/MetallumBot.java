@@ -3,12 +3,12 @@ package com.github.errebenito.metallumbot;
 import com.github.errebenito.metallumbot.command.CommandRunner;
 import com.github.errebenito.metallumbot.connector.UrlConnector;
 import com.github.errebenito.metallumbot.connector.UrlType;
+import com.github.errebenito.metallumbot.utils.MessageUtils;
 import java.net.MalformedURLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -57,7 +57,7 @@ public class MetallumBot extends TelegramLongPollingBot {
         case "/band" -> {
           try {
             runner = new CommandRunner(new UrlConnector().withUrl(UrlType.RANDOM_BAND.getUrl()));
-            sendTextReply(update.getMessage().getChatId(), runner.doBand());
+            execute(MessageUtils.generateMessage(update.getMessage().getChatId(), runner.doBand()));
           } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
@@ -66,14 +66,15 @@ public class MetallumBot extends TelegramLongPollingBot {
           try {
             runner = new CommandRunner(new UrlConnector()
                 .withUrl(UrlType.UPCOMING_RELEASES.getUrl()));
-            sendTextReply(update.getMessage().getChatId(), runner.doUpcoming());
+            execute(MessageUtils.generateMessage(update.getMessage().getChatId(), 
+                runner.doUpcoming()));
           } catch (TelegramApiException | MalformedURLException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
         }
         default -> {
           try {
-            sendTextReply(update.getMessage().getChatId(), USAGE);
+            execute(MessageUtils.generateMessage(update.getMessage().getChatId(), USAGE));
           } catch (TelegramApiException e) {
             LOGGER.error(ERROR_MESSAGE);
           }
@@ -81,14 +82,7 @@ public class MetallumBot extends TelegramLongPollingBot {
       }
     }
   }
-    
-  private void sendTextReply(final Long chatId, final String text) throws TelegramApiException {
-    final SendMessage message = new SendMessage();
-    message.setChatId(chatId);
-    message.setText(text);
-    execute(message);
-  }
-  
+      
   /**
    * Returns the bot name which was specified during registration.
 
