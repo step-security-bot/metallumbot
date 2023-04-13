@@ -5,6 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
+/**
+ * Unit tests for the MessageUtils class.
+
+ * @author rbenito
+ *
+ */
 class MessageUtilsTest {
 
   @Test

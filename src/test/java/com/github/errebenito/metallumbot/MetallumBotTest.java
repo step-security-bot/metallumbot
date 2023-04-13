@@ -21,7 +21,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
  *
  */
 class MetallumBotTest {
-  
+   
   @ParameterizedTest
   @ValueSource(strings = {"/start", "/band", "/upcoming"})
   void testOnUpdateReceived(final String command) {

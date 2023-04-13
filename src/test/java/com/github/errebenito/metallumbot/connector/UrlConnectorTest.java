@@ -8,12 +8,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 /**
- * Unit tests for UrlConnector.
+ * Unit tests for the UrlConnector class. 
 
  * @author rbenito
  *
  */
-class UrlConnectorTest {
+class UrlConnectorTest { 
 
   private static UrlConnector connector;
   
