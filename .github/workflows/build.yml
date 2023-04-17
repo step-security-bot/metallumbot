@@ -11,6 +11,10 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    env:
+      CHAT_ID: ${{ vars.CHAT_ID }}
+      METALLUM_BOT_TOKEN: ${{ vars.METALLUM_BOT_TOKEN }}
+      METALLUM_BOT_NAME: ${{ vars.METALLUM_BOT_NAME }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -21,10 +25,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - name: Build with Maven
-        env:
-          CHAT_ID: ${{ vars.CHAT_ID }}
-          METALLUM_BOT_TOKEN: ${{ vars.METALLUM_BOT_TOKEN }}
-          METALLUM_BOT_NAME: ${{ vars.METALLUM_BOT_NAME }}
         run: mvn --batch-mode --update-snapshots package
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v3
