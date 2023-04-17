@@ -11,6 +11,10 @@ jobs:
   build:
     name: Build and analyze
     runs-on: ubuntu-latest
+    env:
+      CHAT_ID: ${{ vars.CHAT_ID }}
+      METALLUM_BOT_TOKEN: ${{ vars.METALLUM_BOT_TOKEN }}
+      METALLUM_BOT_NAME: ${{ vars.METALLUM_BOT_NAME }}
     steps:
       - uses: actions/checkout@v3
         with:
