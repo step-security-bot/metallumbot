@@ -22,7 +22,7 @@ public class CommandRunner {
   
   private static final String ERROR_MESSAGE = "Error retrieving data";
   
-  private UrlConnector connector;
+  private final UrlConnector connector;
   
   /**
    * Constructor.

@@ -19,7 +19,7 @@ import javax.validation.Valid;
 @JsonPropertyOrder({"aaData"})
 public class UpcomingAlbums implements Serializable {
   
-  private static final int ANCHOR_TAG_START_LENGTH = 8;
+  private static final int START_LENGTH = 8;
 
   private static final long serialVersionUID = 2788594305013188535L;
 
@@ -58,7 +58,7 @@ public class UpcomingAlbums implements Serializable {
 
   private String trimLink(final String link) {
     final int index = link.lastIndexOf("\">");
-    return link.substring(ANCHOR_TAG_START_LENGTH, index).replace("\"", "");
+    return link.substring(START_LENGTH, index).replace("\"", "");
   }
   
   private String formatData(final String data) {

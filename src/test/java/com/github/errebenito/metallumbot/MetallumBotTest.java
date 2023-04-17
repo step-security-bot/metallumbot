@@ -28,12 +28,41 @@ class MetallumBotTest {
     final Message message = new Message();
     message.setText(command);
     final Chat chat = new Chat();
-    chat.setId(1L);
+    final long chatId = Long.parseLong(System.getenv("CHAT_ID"));
+    chat.setId(chatId);
     message.setChat(chat);
     final Update updateMock = createMock(Update.class);
     expect(updateMock.hasMessage()).andReturn(true);
+    expectLastCall().anyTimes();
     expect(updateMock.getMessage()).andReturn(message);
-    expectLastCall().times(3);
+    expectLastCall().anyTimes();
+    replay(updateMock);
+    final MetallumBot bot = new MetallumBot();
+    bot.onUpdateReceived(updateMock);
+    verify(updateMock);
+  }
+  
+  @Test
+  void testOnUpdateReceivedWithoutMessage() {
+    final Update updateMock = createMock(Update.class);
+    expect(updateMock.hasMessage()).andReturn(false);
+    expectLastCall().anyTimes();
+    replay(updateMock);
+    final MetallumBot bot = new MetallumBot();
+    bot.onUpdateReceived(updateMock);
+    verify(updateMock);
+  }
+  
+  @Test
+  void testOnUpdateReceivedWithEmptyMessage() {
+    final Message messageMock = createMock(Message.class);
+    expect(messageMock.hasText()).andReturn(false);
+    expectLastCall().anyTimes();
+    final Update updateMock = createMock(Update.class);
+    expect(updateMock.hasMessage()).andReturn(true);
+    expectLastCall().anyTimes();
+    expect(updateMock.getMessage()).andReturn(messageMock);
+    expectLastCall().anyTimes();
     replay(updateMock);
     final MetallumBot bot = new MetallumBot();
     bot.onUpdateReceived(updateMock);

@@ -12,9 +12,9 @@ import java.net.URL;
 public enum UrlType {
   RANDOM_BAND("https://www.metal-archives.com/band/random"),
   UPCOMING_RELEASES("https://www.metal-archives.com/release/ajax-upcoming/json");
-  
+
   private final String url;
-  
+
   UrlType(final String url) {
     this.url = url;
   }
