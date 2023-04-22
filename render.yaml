@@ -1,0 +1,8 @@
+services:
+  # A Docker web service
+  - type: web
+    name: metallumbot
+    env: docker
+    region: frankfurt
+    branch: main
+    plan: free
