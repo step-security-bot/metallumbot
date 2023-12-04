@@ -29,6 +29,8 @@ jobs:
       METALLUM_BOT_TOKEN: ${{ vars.METALLUM_BOT_TOKEN }}
       METALLUM_BOT_NAME: ${{ vars.METALLUM_BOT_NAME }}
     steps:
+      - name: Print env vars
+        run: echo "$CHAT_ID"
       - name: Harden Runner
         uses: step-security/harden-runner@eb238b55efaa70779f274895e782ed17c84f2895 # v2.6.1
         with:
