@@ -57,4 +57,4 @@ jobs:
           CHAT_ID: ${{ vars.CHAT_ID }}
           METALLUM_BOT_TOKEN: ${{ vars.METALLUM_BOT_TOKEN }}
           METALLUM_BOT_NAME: ${{ vars.METALLUM_BOT_NAME }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=errebenito_metallumbot
+        run: echo $CHAT_ID && mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=errebenito_metallumbot
